@@ -34,7 +34,7 @@ class UsersController < ApplicationController
       user = User.find_by(id: params[:id])
       messgae = errors.full_messages
       if user.update(user_params)
-      render json: user, :only => [:id, :username, :password, :img_url, :bio]
+      render json: user, :only => [:id, :username, :img_url, :notes]
       # else
       #     render json: => { :error => " Could not update User try again " }
       end
