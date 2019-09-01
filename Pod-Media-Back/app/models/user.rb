@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
     validates :username, presence: true
     validates :username, uniqueness: { case_sensitive: false }
+    validates :email, presence: true 
+    validates :email, uniqueness: { case_sensitive: false }
 
     has_many :relationships
     has_many :friends, through: :relationships

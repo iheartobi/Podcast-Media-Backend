@@ -1,14 +1,14 @@
 class UsersController < ApplicationController
-    skip_before_action :authorized, only: [:create]
+    skip_before_action :authorized, only: [:create, :index, :show, :update, :edit]
     
     def index
       users = User.all 
-      render json: users, :only  => [:id, :username, :img_url, :notes]
+      render json: users, :only  => [:id, :username, :img_url, :notes, :likes, :follows, :followers]
     end
   
     def show
       user = User.find_by(id: params[:id])
-      render json: user, :only => [:username, :img_url]
+      render json: user, :only => [:id, :username, :img_url, :notes, :likes, :follows, :followers]
     end
 
     def profile
@@ -27,14 +27,13 @@ class UsersController < ApplicationController
 
 
     def edit 
-      user = User.find_by(id: params[:id])  
+      user = User.find_by(id: params[:id]) 
     end
 
     def update 
       user = User.find_by(id: params[:id])
-      messgae = errors.full_messages
       if user.update(user_params)
-      render json: user, :only => [:id, :username, :img_url, :notes]
+      render json: user, :only => [:id, :username, :email, :img_url, :notes]
       # else
       #     render json: => { :error => " Could not update User try again " }
       end
@@ -47,8 +46,8 @@ class UsersController < ApplicationController
    
     private
    
-    def user_params
-      params.require(:user).permit(:username, :password, :img_url, :notes)
+    def user_params(*args)
+      params.require(:user).permit(*args)
     end
 
 end
