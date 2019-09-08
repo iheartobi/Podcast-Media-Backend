@@ -1,68 +1,45 @@
 class CommentsController < ApplicationController
-
+    skip_before_action :authorized
+    before_action :find_comment, only: [:update, :destroy]
+  
     def index
-        comments = Comment.all 
-        render json: comments.to_json(:include => {
-            :user => {:only => [:id, :username]}
-        }, :except => [:updated_at, :created_at])
+      @comments = Comment.all
+      render json: comments
     end
 
-    def show 
-        comment = Comment.find_by(id: params[:id])
-        render json: comment.to_json(:include => {
-            :user => {:only => [:id, :username]}
-        }, :except => [:updated_at, :created_at])
+    def show
+      comment = Comment.find_by(id: params[:id])
+      render json: comment
     end
-
-    def new 
-        comment = Comment.new
+  
+    def create
+      @comment = Comment.create(user_id: params[:user_id], post_id: params[:post_id], comment: params[:comment])
+      render json: comment, status: :accepted
     end
-
-    def create 
-        comment = Comment.new(comment_params)
-        if comment.save
-            render json: comment.to_json(:include => {
-                :user => {:only => [:id, :username]}
-            }, :except => [:updated_at, :created_at])
-            else 
-                render json: {error: 'Comment could not be displayed'}
+  
+    def update
+      comment.update(comment_params)
+      if comment.save
+        render json: comment, status: :accepted
+      else
+        render json: { errors: comment.errors.full_messages }, status: :unprocessible_entity
       end
     end
-
-    def edit 
-        comment = Comment.find_by(id: params[:id])
+  
+    def destroy
+      @comment.destroy
+      render json: { message: “removed” }, status: :ok
     end
-
-    def update 
-        comment = Comment.find_by(id: params[:id])
-        if comment.update(comment_params)
-            render json: comment.to_json(:include => {
-                :user => {:only => [:id, :username]}
-            }, :except => [:updated_at, :created_at])
-            else  
-                render json: {error: 'Comment failed to update'}
-         end
-    end
-
-    def destroy 
-        comment = Comment.find_by(id: params[:id])
-        comment.destroy
-    end
-
+  
     private
-
-    def comment_params 
-
-        params.requre(:comment).permit(:comment)
+  
+    def comment_params
+      params.require(:comment).permit(:post_id, :comment).merge(user_id: current_user.id)
     end
-end
+  
+    def find_comment
+      comment = Comment.find(params[:id]) 
+    end
+  
+  end
 
-# class SightingsController < ApplicationController
-#     def show
-#       sighting = Sighting.find_by(id: params[:id])
-#       render json: sighting.to_json(:include => {
-#         :bird => {:only => [:name, :species]},
-#         :location => {:only => [:latitude, :longitude]}
-#       }, :except => [:updated_at])
-#     end
-#   end
