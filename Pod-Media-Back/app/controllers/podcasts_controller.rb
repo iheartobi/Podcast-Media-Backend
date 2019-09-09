@@ -5,4 +5,10 @@ class PodcastsController < ApplicationController
         render json: podcasts
     end
 
+    def show 
+        podcast = Podcast.find(params[:id])
+        render json: podcast
+    end
+
+
 end
