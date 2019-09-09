@@ -10,16 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_06_201452) do
+ActiveRecord::Schema.define(version: 2019_09_08_143538) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "comments", force: :cascade do |t|
     t.text "comment"
-    t.integer "user_id"
     t.integer "post_id"
-    t.bigint "friend_id"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -34,27 +33,25 @@ ActiveRecord::Schema.define(version: 2019_09_06_201452) do
   end
 
   create_table "podcasts", force: :cascade do |t|
-    t.string "title"
-    t.string "publisher"
+    t.string "name"
     t.string "image"
-    t.string "thumbnail"
-    t.string "listennotes_url"
+    t.integer "listens"
+    t.integer "likes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "posts", force: :cascade do |t|
     t.string "content", default: ""
-    t.integer "like_count", default: 0
+    t.integer "likes", default: 0
     t.integer "user_id"
-    t.integer "friend_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "relationships", force: :cascade do |t|
-    t.bigint "friend_id"
     t.bigint "user_id"
+    t.bigint "friend_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["friend_id"], name: "index_relationships_on_friend_id"
@@ -82,5 +79,7 @@ ActiveRecord::Schema.define(version: 2019_09_06_201452) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "likes", "posts"
+  add_foreign_key "likes", "users"
   add_foreign_key "subscriptions", "users"
 end

@@ -1,3 +1,3 @@
 class PodcastSerializer < ActiveModel::Serializer
-  attributes :id, :name, :image, :listens, :likes
+  attributes :id, :title, :image, :publisher, :thumbnail
 end

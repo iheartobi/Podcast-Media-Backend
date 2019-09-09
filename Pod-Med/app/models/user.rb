@@ -1,6 +1,6 @@
 class User < ApplicationRecord
     has_secure_password
-    has_many :likes
+    
     has_many :posts, dependent: :destroy
     has_many :subscriptions, dependent: :destroy
     has_many :podcasts, through: :subscriptions

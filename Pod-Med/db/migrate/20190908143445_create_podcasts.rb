@@ -1,14 +1,13 @@
 class CreatePodcasts < ActiveRecord::Migration[5.2]
   def change
     create_table :podcasts do |t|
-      t.string :title
-      t.string :publisher
+      t.string :name
       t.string :image
-      t.string :thumbnail
-      t.string :listennotes_url
-      
+      t.integer :listens
+      t.integer :likes
 
       t.timestamps
     end
   end
 end
+

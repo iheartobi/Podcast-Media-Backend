@@ -1,7 +1,7 @@
 class LikesController < ApplicationController
 
     skip_before_action :authorized
-    before_action :find_like, only: [:destroy]
+    # before_action :find_like, only: [:destroy]
   
     def index
       likes = Like.all
