@@ -3,7 +3,7 @@ class CommentsController < ApplicationController
     before_action :find_comment, only: [:update, :destroy]
   
     def index
-      @comments = Comment.all
+      comments = Comment.all
       render json: comments
     end
 
@@ -13,8 +13,9 @@ class CommentsController < ApplicationController
     end
   
     def create
-      @comment = Comment.create(user_id: params[:user_id], post_id: params[:post_id], comment: params[:comment])
-      render json: comment, status: :accepted
+      @comment = Comment.new(user_id: params[:user_id], post_id: params[:post_id], comment: params[:comment])
+      p @comment
+      render json: @comment, status: :accepted
     end
   
     def update
@@ -34,7 +35,7 @@ class CommentsController < ApplicationController
     private
   
     def comment_params
-      params.require(:comment).permit(:post_id, :comment).merge(user_id: current_user.id)
+      params.require(:comment).permit( :comment, :user_id, :post_id)
     end
   
     def find_comment

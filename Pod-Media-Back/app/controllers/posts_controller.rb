@@ -5,7 +5,7 @@ class PostsController < ApplicationController
   
     def index
       posts = Post.all
-      render json: posts
+      render json: {posts: posts}, include: ['user', 'comments']
     end
   
     def show
@@ -14,8 +14,14 @@ class PostsController < ApplicationController
     end
 
     def create
-      post = Post.create(post_params)
-      render json: post, status: :accepted
+     
+      post = Post.new(user_id: params[:post][:user_id], content: params[:post][:content])
+      # post = Post.new(post_params)
+      if post.save
+        render json: post, status: :accepted
+      else
+        render json: {error: "post not created", status: :not_accepted}
+      end
     end
   
     def update
@@ -37,7 +43,7 @@ class PostsController < ApplicationController
     private
   
     def post_params
-      params.require(:post).permit(:content)
+      params.permit(:content, :user_id)
     end
   
     def find_post

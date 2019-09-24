@@ -1,4 +1,5 @@
 class RelationshipsController < ApplicationController
+    skip_before_action :authorized
     def index 
         relationships = Relationship.all
         render json: relationships, except: [:created_at, :updated_at]
