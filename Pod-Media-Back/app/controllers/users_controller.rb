@@ -3,12 +3,13 @@ class UsersController < ApplicationController
     
     def index
       users = User.all 
-      render json: users
+      render json: {users: users}, include: ['posts', 'comments']
+      # needs to render posts, comments,
     end
   
     def show
       user = User.find_by(id: params[:id])
-      render json: user
+      render json: {user: user}
     end
 
     def profile
@@ -26,23 +27,14 @@ class UsersController < ApplicationController
     end
 
 
-    def edit 
-      user = User.find_by(id: params[:id]) 
-    end
-
-#     def update
-#       user = User.find(params[:id])
-#      user.update(user_params)
-#      render json: user
-#  end
 
     def update 
       user = User.find_by(id: params[:id])
-      user.update(user_params)
+      if user.update(id: params[:id], username: params[:username], bio: params[:bio], img_url: params[:img_url], email: params[:email])
       render json: user
-      # else
-      #   render json: { errors: "Could Not Update" }, status: :unprocessible_entity
-      # end
+      else
+        render json: { errors: "Could Not Update" }, status: :unprocessible_entity
+      end
     end
 
     def destroy
@@ -54,7 +46,7 @@ class UsersController < ApplicationController
     private
    
     def user_params
-      params.require(:user).permit(:username, :email, :password)
+      params.require(:user).permit(:username, :password, :bio, :img_url, :email )
     end
 
 end
